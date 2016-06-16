@@ -8,12 +8,14 @@ import subprocess
 def find_gtm_path():
     if sys.platform == 'win32':
         exe = 'gtm.exe'
-        default_path = ""
         path_sep = ";"
+        pf = os.path.join(os.environ.get("ProgramFiles", ""), "gtm", "bin")
+        pfx86 = os.path.join(os.environ.get("ProgramFiles(x86)", ""), "gtm", "bin")
+        default_path = pf + path_sep + pfx86
     else:
         exe = 'gtm'
-        default_path = "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/"
         path_sep = ":"
+        default_path = "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/"
 
     env_path = set(os.environ['PATH'].split(path_sep))
     paths = env_path.union(set(default_path.split(path_sep)))
