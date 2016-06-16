@@ -1,36 +1,30 @@
-import shlex
 import sublime
 import sublime_plugin
 import sys
 import time
 import os
+import subprocess
 
-def find_gtm(gtm):
-    # Adapted from https://gist.github.com/4368898
-    # Public domain code by anatoly techtonik <techtonik@gmail.com>
-    # AKA Linux `which` and Windows `where`
-
-    path = os.environ['PATH']
-    extlist = ['']
+def find_gtm_path():
     if sys.platform == 'win32':
-        pathext = os.environ['PATHEXT'].lower().split(os.pathsep)
-        (base, ext) = os.path.splitext(gtm)
-        if ext.lower() not in pathext:
-            extlist = pathext
+        exe = 'gtm.exe'
+        default_path = ""
+        path_sep = ";"
     else:
-        # add in the typical brew executable path
-        path = path + ':/usr/local/bin:/usr/local/sbin'
+        exe = 'gtm'
+        default_path = "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin/"
+        path_sep = ":"
 
-    for ext in extlist:
-        execname = gtm + ext
-        if os.path.isfile(execname):
-            return execname
-        else:
-            paths = path.split(os.pathsep)
-            for p in paths:
-                f = os.path.join(p, execname)
-                if os.path.isfile(f):
-                    return f
+    env_path = set(os.environ['PATH'].split(path_sep))
+    paths = env_path.union(set(default_path.split(path_sep)))
+
+    if os.path.isfile(exe):
+        return exe
+    else:
+        for p in paths:
+            f = os.path.join(p, exe)
+            if os.path.isfile(f):
+                return f
 
     return None
 
@@ -39,8 +33,11 @@ class GTM(sublime_plugin.EventListener):
     last_update = 0.0
     last_path = None
 
-    # TODO: how to handle if gtm not found?
-    gtm_path = find_gtm('gtm')
+    gtm_path = find_gtm_path()
+    
+    if not gtm_path:
+       print("Unable to find the 'gtm' executable")
+       print("Please makes sure it is installed and accesible via your path")
 
     def on_post_save_async(self, view):
         self.record(view, view.file_name())
@@ -63,5 +60,9 @@ class GTM(sublime_plugin.EventListener):
             GTM.last_update = time.time()
             GTM.last_path = path
 
-            cmd = "{0} record {1}".format(GTM.gtm_path, path)
-            view.window().run_command('exec', {'cmd': shlex.split(cmd)})
+            cmd = '{0} record "{1}"'.format(GTM.gtm_path, path)
+            return_code = subprocess.call(cmd, shell=True)
+
+            if return_code != 0:
+                print("Unable to run 'gtm' command")
+                print("Please makes sure it is installed and accesible via your path")
