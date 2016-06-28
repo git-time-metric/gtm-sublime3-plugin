@@ -37,9 +37,18 @@ class GTM(sublime_plugin.EventListener):
 
     gtm_path = find_gtm_path()
     
+    no_gtm_err = ("GTM executable not found\n"
+                  "Install GTM and/or update your system path\n"
+                  "Make sure to restart Sublime after install\n"
+                  "See https://www.github.com/git-time-metric/gtm")
+
+    record_err = ("GTM error saving time\n"
+                  "Install GTM and/or update your system path\n"
+                  "Make sure to restart Sublime after install\n"
+                  "See https://www.github.com/git-time-metric/gtm")
+
     if not gtm_path:
-       print("Unable to find the 'gtm' executable")
-       print("Please makes sure it is installed and accesible via your path")
+        sublime.error_message(no_gtm_err)
 
     def on_post_save_async(self, view):
         self.record(view, view.file_name())
@@ -55,7 +64,7 @@ class GTM(sublime_plugin.EventListener):
 
     def record(self, view, path):
 
-        if path and (
+        if GTM.gtm_path and path and (
             path != GTM.last_path or
             time.time() - GTM.last_update > GTM.update_interval ):
 
@@ -66,5 +75,4 @@ class GTM(sublime_plugin.EventListener):
             return_code = subprocess.call(cmd, shell=True)
 
             if return_code != 0:
-                print("Unable to run 'gtm' command")
-                print("Please makes sure it is installed and accesible via your path")
+                sublime.error_message(GTM.record_err)
