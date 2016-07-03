@@ -5,6 +5,7 @@ Git Time Metrics (GTM) is a tool to automatically track time spent reading and w
 
 ### Installation
 
-Use [Package Control](https://packagecontrol.io), this package only supports Sublime Text 3.
+Installing GTM is a two step process.  First, it's recommended you install the GTM executable that the plug-in integrates with and then install the Sublime 3 GTM plug-in.  Please submit an issue if you have any problems and/or questions.
 
-In addition to the plug-in you will need to install GTM.  Checkout the main [GTM repository](https://github.com/git-time-metric/gtm) for more information.
+1. Follow the [Getting Started](https://github.com/git-time-metric/gtm/blob/master/README.md) section to install the GTM executable for your operating system. 
+2. Install the plug-in via [Package Control](https://packagecontrol.io).
