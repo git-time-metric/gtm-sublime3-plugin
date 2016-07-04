@@ -5,6 +5,8 @@ import time
 import os
 import subprocess
 
+gtm_settings = {}
+
 def find_gtm_path():
     if sys.platform == 'win32':
         exe = 'gtm.exe'
@@ -30,25 +32,56 @@ def find_gtm_path():
 
     return None
 
+def plugin_loaded():
+    global gtm_settings
+    gtm_settings = sublime.load_settings('gtm.sublime-settings')
+    gtm_settings.add_on_change('gtm_status_bar', set_status_bar)
+    set_status_bar()
+
+def set_status_bar():
+    if GTM.status_option_found and gtm_settings.get('gtm_status_bar', True):
+        GTM.status_option = '--status'
+        print("Enabling reporting time in status bar")
+    else:
+        GTM.status_option = ''
+        print("Disabling reporting time in status bar")
+
 class GTM(sublime_plugin.EventListener):
     update_interval = 30
-    last_update = 0.0
+    last_update = 0
     last_path = None
+    status_option = ""
+
+    no_gtm_err = ("GTM executable not found. "
+                  "Install GTM and/or update your system path. "
+                  "Make sure to restart Sublime after install. \n\n"
+                  "See https://www.github.com/git-time-metric/gtm")
+
+    record_err = ("GTM error saving time. "
+                  "Install GTM and/or update your system path. "
+                  "Make sure to restart Sublime after install.\n\n"
+                  "See https://www.github.com/git-time-metric/gtm")
+
+    ver_warn = ("GTM executable does not support all required features. "
+                "Please install the latest GTM version and restart Sublime.\n\n"
+                "See https://www.github.com/git-time-metric/gtm")
 
     gtm_path = find_gtm_path()
-    
-    no_gtm_err = ("GTM executable not found\n"
-                  "Install GTM and/or update your system path\n"
-                  "Make sure to restart Sublime after install\n"
-                  "See https://www.github.com/git-time-metric/gtm")
-
-    record_err = ("GTM error saving time\n"
-                  "Install GTM and/or update your system path\n"
-                  "Make sure to restart Sublime after install\n"
-                  "See https://www.github.com/git-time-metric/gtm")
 
     if not gtm_path:
         sublime.error_message(no_gtm_err)
+    else:
+        # check support for [gtm record --status] feature
+        p = subprocess.Popen("{0} record --help".format(gtm_path),
+                             shell=True,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT,
+                             close_fds=True)
+        output = p.stdout.read()
+        status_option_found = '-status' in output.decode('utf-8')
+        if not status_option_found:
+            sublime.error_message(ver_warn)
 
     def on_post_save_async(self, view):
         self.record(view, view.file_name())
@@ -71,8 +104,15 @@ class GTM(sublime_plugin.EventListener):
             GTM.last_update = time.time()
             GTM.last_path = path
 
-            cmd = '{0} record "{1}"'.format(GTM.gtm_path, path)
-            return_code = subprocess.call(cmd, shell=True)
+            cmd = '{0} record {1} "{2}"'.format(GTM.gtm_path,
+                                                GTM.status_option,
+                                                path)
 
-            if return_code != 0:
+            try:
+                cmd_output = subprocess.check_output(cmd, shell=True)
+                if GTM.status_option != "":
+                    view.set_status("gtm-statusbar", cmd_output.decode('utf-8'))
+                else:
+                    view.erase_status("gtm-statusbar")
+            except subprocess.CalledProcessError as e:
                 sublime.error_message(GTM.record_err)

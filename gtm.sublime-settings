@@ -1,0 +1,4 @@
+{
+  // enable time reporting in status bar
+  "gtm_status_bar": true
+}
