@@ -72,7 +72,7 @@ class GTM(sublime_plugin.EventListener):
         sublime.error_message(no_gtm_err)
     else:
         # check support for [gtm record --status] feature
-        p = subprocess.Popen("{0} record --help".format(gtm_path),
+        p = subprocess.Popen('"{0}" record --help'.format(gtm_path),
                              shell=True,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
@@ -103,7 +103,7 @@ class GTM(sublime_plugin.EventListener):
             GTM.last_update = time.time()
             GTM.last_path = path
 
-            cmd = '{0} record {1} "{2}"'.format(GTM.gtm_path,
+            cmd = '"{0}" record {1} "{2}"'.format(GTM.gtm_path,
                                                 GTM.status_option,
                                                 path)
 
