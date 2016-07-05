@@ -76,8 +76,7 @@ class GTM(sublime_plugin.EventListener):
                              shell=True,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             close_fds=True)
+                             stderr=subprocess.STDOUT)
         output = p.stdout.read()
         status_option_found = '-status' in output.decode('utf-8')
         if not status_option_found:
