@@ -1,3 +1,4 @@
+![GTM Logo](https://raw.githubusercontent.com/git-time-metric/gtm-atom-plugin/master/lib/GTMLogo-128.png)
 # Sublime Text 3 Git Time Metrics (GTM) plug-in
 ### Simple, seamless, lightweight time tracking for all your git projects
 
