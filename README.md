@@ -32,8 +32,9 @@ Use the command line to report on time logged for your commits.
 Here are some examples of insights GTM can provide you.
 
 **Git commits with time spent**
-
 ```
+> gtm report -total-only -n 3
+
 9361c18 Rename packages
 Sun Jun 19 09:56:40 2016 -0500 Michael Schenk  34m 30s
 
@@ -47,6 +48,8 @@ Thu Jun 16 22:28:45 2016 -0500 Michael Schenk  1h  1m  0s
 **Git commits with detailed time spent by file**
 
 ```
+> gtm report
+
 b2d16c8 Refactor discovering of paths when recording events
 Thu Jun 16 11:08:47 2016 -0500 Michael Schenk
 
@@ -63,6 +66,8 @@ Thu Jun 16 11:08:47 2016 -0500 Michael Schenk
 **Timeline of time spent by day**
 
 ```
+> gtm report -format timeline -n 3
+
            0123456789012345678901234
 Fri Jun 24 *                              22m  0s
 Sat Jun 25 **                          1h 28m  0s

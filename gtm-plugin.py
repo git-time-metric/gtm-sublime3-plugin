@@ -4,6 +4,7 @@ import sys
 import time
 import os
 import subprocess
+import re
 
 gtm_settings = {}
 
@@ -39,7 +40,7 @@ def plugin_loaded():
     set_status_bar()
 
 def set_status_bar():
-    if GTM.status_option_found and gtm_settings.get('gtm_status_bar', True):
+    if gtm_settings.get('gtm_status_bar', True):
         GTM.status_option = '--status'
         print("Enabling reporting time in status bar")
     else:
@@ -47,39 +48,41 @@ def set_status_bar():
         print("Disabling reporting time in status bar")
 
 class GTM(sublime_plugin.EventListener):
+    gtm_ver_req = '>= 1.0-beta.6'
+
     update_interval = 30
     last_update = 0
     last_path = None
-    status_option = ""
+    status_option = ''
 
-    no_gtm_err = ("GTM executable not found. "
-                  "Install GTM and/or update your system path. "
-                  "Make sure to restart Sublime after install. \n\n"
-                  "See https://www.github.com/git-time-metric/gtm")
-
-    record_err = ("GTM error saving time. "
+    no_gtm_err = ("GTM executable not found.\n\n"
                   "Install GTM and/or update your system path. "
                   "Make sure to restart Sublime after install.\n\n"
-                  "See https://www.github.com/git-time-metric/gtm")
+                  "See https://github.com/git-time-metric/gtm/blob/master/README.md")
 
-    ver_warn = ("GTM executable does not support all required features. "
+    record_err = ("GTM error saving time.\n\n"
+                  "Install GTM and/or update the system path. "
+                  "Make sure to restart Sublime after install.\n\n"
+                  "See https://github.com/git-time-metric/gtm/blob/master/README.md")
+
+    ver_warn = ("GTM executable is out of date.\n\n"
+                "The plug-in may not work properly. "
                 "Please install the latest GTM version and restart Sublime.\n\n"
-                "See https://www.github.com/git-time-metric/gtm")
+                "See https://github.com/git-time-metric/gtm/blob/master/README.md")
 
     gtm_path = find_gtm_path()
 
     if not gtm_path:
         sublime.error_message(no_gtm_err)
     else:
-        # check support for [gtm record --status] feature
-        p = subprocess.Popen('"{0}" record --help'.format(gtm_path),
+        p = subprocess.Popen('"{0}" verify "{1}"'.format(gtm_path, gtm_ver_req),
                              shell=True,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
         output = p.stdout.read()
-        status_option_found = '-status' in output.decode('utf-8')
-        if not status_option_found:
+        version_ok = 'true' in output.decode('utf-8')
+        if not version_ok:
             sublime.error_message(ver_warn)
 
     def on_post_save_async(self, view):
@@ -109,9 +112,17 @@ class GTM(sublime_plugin.EventListener):
 
             try:
                 cmd_output = subprocess.check_output(cmd, shell=True)
-                if GTM.status_option != "":
-                    view.set_status("gtm-statusbar", cmd_output.decode('utf-8'))
+                if GTM.status_option:
+                    view.set_status(
+                        "gtm-statusbar",
+                        GTM.format_status(cmd_output))
                 else:
                     view.erase_status("gtm-statusbar")
             except subprocess.CalledProcessError as e:
                 sublime.error_message(GTM.record_err)
+
+    def format_status(t):
+        s = t.decode('utf-8').strip()
+        if s:
+            s = ' '.join(re.sub("\\s*\\d*s\\s*", "", s).split())
+        return "[ {0} ]".format(s)
