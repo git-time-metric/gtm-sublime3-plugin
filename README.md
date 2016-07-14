@@ -11,6 +11,14 @@ Installing GTM is a two step process.  First, it's recommended you install the G
 1. Follow the [Getting Started](https://github.com/git-time-metric/gtm/blob/master/README.md) section to install the GTM executable for your operating system.
 2. Install the plug-in via [Package Control](https://packagecontrol.io).
 
+**Note** - to enable time tracking for a Git repository, you need to initialize it with `gtm init` otherwise it will be ignored by GTM. This is done via the command line.
+```
+> cd /path/to/your/project
+> gtm init
+
+```
+Consult the [README](https://github.com/git-time-metric/gtm/blob/master/README.md) and [Wiki](https://github.com/git-time-metric/gtm/wiki) for more information.
+
 # Features
 
 ### Status Bar
@@ -21,11 +29,9 @@ In the status bar see your total time spent for in-process work (uncommitted).
 
 This can be disabled by setting `gtm_status_bar: false` in gtm.sublime-settings.
 
-*Note* - the time shown is based on the file's path and the Git repository it belongs to. You can have several files open that belong to different Git repositories. The status bar will display the time for the current file's Git repository.  Also keep in mind, a Git repository must be initialized for time tracking in order to track time.
+**Note** - the time shown is based on the file's path and the Git repository it belongs to. You can have several files open that belong to different Git repositories. The status bar will display the time for the current file's Git repository.  Also keep in mind, a Git repository must be initialized for time tracking in order to track time.
 
-Consult the [README](https://github.com/git-time-metric/gtm/blob/master/README.md) and [Wiki](https://github.com/git-time-metric/gtm/wiki) for more information.
-
-### Command Line Inteface
+### Command Line Interface
 
 Use the command line to report on time logged for your commits.
 
@@ -76,5 +82,8 @@ Mon Jun 27 *                               4m  0s
 Tue Jun 28 **                          1h 36m  0s
                                        6h 58m  0s
 ```
+# Support
+
+To report a bug, please submit an issue on the [GitHub Page](https://github.com/git-time-metric/gtm-sublime3-plugin/issues)
 
 Consult the [README](https://github.com/git-time-metric/gtm/blob/master/README.md) and [Wiki](https://github.com/git-time-metric/gtm/wiki) for more information.
