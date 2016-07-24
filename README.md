@@ -15,8 +15,8 @@ Installing GTM is a two step process.  First, it's recommended you install the G
 ```
 > cd /path/to/your/project
 > gtm init
-
 ```
+
 Consult the [README](https://github.com/git-time-metric/gtm/blob/master/README.md) and [Wiki](https://github.com/git-time-metric/gtm/wiki) for more information.
 
 # Features
