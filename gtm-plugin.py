@@ -12,8 +12,8 @@ def find_gtm_path():
     if sys.platform == 'win32':
         exe = 'gtm.exe'
         path_sep = ";"
-        pf = os.path.join(os.environ.get("ProgramFiles", ""), "gtm", "bin")
-        pfx86 = os.path.join(os.environ.get("ProgramFiles(x86)", ""), "gtm", "bin")
+        pf = os.path.join(os.environ.get("ProgramFiles", ""), "gtm")
+        pfx86 = os.path.join(os.environ.get("ProgramFiles(x86)", ""), "gtm")
         default_path = pf + path_sep + pfx86
     else:
         exe = 'gtm'
