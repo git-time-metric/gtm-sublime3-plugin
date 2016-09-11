@@ -122,7 +122,4 @@ class GTM(sublime_plugin.EventListener):
                 sublime.error_message(GTM.record_err)
 
     def format_status(t):
-        s = t.decode('utf-8').strip()
-        if s:
-            s = ' '.join(re.sub("\\s*\\d*s\\s*", "", s).split())
-        return "[ {0} ]".format(s)
+        return t.decode('utf-8').strip()
