@@ -48,7 +48,7 @@ def set_status_bar():
         print("Disabling reporting time in status bar")
 
 class GTM(sublime_plugin.EventListener):
-    gtm_ver_req = '>= 1.0.0'
+    gtm_ver_req = '>= 1.1.0'
 
     update_interval = 30
     last_update = 0
