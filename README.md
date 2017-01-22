@@ -38,11 +38,16 @@ Use the command line to report on time logged for your commits.
 
 Here are some examples of insights GTM can provide you.
 
-![](https://cloud.githubusercontent.com/assets/630550/19832562/41947ae2-9dec-11e6-932b-c2bca710da40.png)
+##### $ gtm report -last-month
+<div><img src="https://cloud.githubusercontent.com/assets/630550/21582250/8a03f9dc-d015-11e6-8f77-548ef7314bf7.png"></div>
 
-![](https://cloud.githubusercontent.com/assets/630550/19832563/430e3caa-9dec-11e6-9bdf-51d52e95d947.png)
+##### $ gtm report -last-month -format summary
+<div><img src="https://cloud.githubusercontent.com/assets/630550/21582252/8f85b738-d015-11e6-8c70-beed7e7b3254.png"></div>
 
-GTM is automatic, seamless and lightweight.  There is no need to remember to start and stop timers.  It runs on occasion to capture activity triggered by your editor.  The time metrics are stored locally with the git repository as [Git notes](https://git-scm.com/docs/git-notes) and can be pushed to the remote repository. 
+##### $ gtm report -last-month -format timeline-hours
+<div><img src="https://cloud.githubusercontent.com/assets/630550/21582253/91f6226e-d015-11e6-897c-6042111e6a6a.png"></div> </br>
+
+GTM is automatic, seamless and lightweight.  There is no need to remember to start and stop timers.  It runs on occasion to capture activity triggered by your editor.  The time metrics are stored locally with the git repository as [Git notes](https://git-scm.com/docs/git-notes) and can be pushed to the remote repository.
 
 # Support
 
